@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
         enum: ["staff", "advisor", "instructor", "student"],
     },
 },
-{
-    timestamps: true,
-}
+    {
+        timestamps: true,
+    }
 );
 
 // export it

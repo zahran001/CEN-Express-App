@@ -1,6 +1,6 @@
 // import the express
 const express = require("express");
-const {register, login} = require("../controllers/authController");
+const { register, login } = require("../controllers/authController");
 const router = express.Router();
 
 // For the register endpoint, we could just define the request response.
