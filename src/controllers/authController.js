@@ -11,19 +11,20 @@ const register = async (req, res) => {
 
         // We will have these three filled from the user as a request body
         // When we create the model, these three values should be the properties in the user object
-        const { username, password, role } = req.body;
+        const { username, password, role, department, major } = req.body;
 
         // hash the password
         // pass the salt number required to hash the password along with the raw password
         const bcryptHashedPassword = await bcrypt.hash(password, 10);
         // create the newUser
-        const newUser = new User({ username, password: bcryptHashedPassword, role });
+        const newUser = new User({ username, password: bcryptHashedPassword, role, department, major });
         // save that user
         await newUser.save();
         // give back the response - pass the json data to the user 
         res.status(201).json({ message: `User registered with username ${username}` });
     } catch (error) {
-        res.status(500).json({ message: `User registration failed` });
+        // debugging
+        res.status(500).json({ message: `User registration failed - authController` });
 
     }
 };

@@ -16,6 +16,23 @@ const userSchema = new mongoose.Schema({
         required: true,
         enum: ["staff", "advisor", "instructor", "student"],
     },
+    
+    // CSE, Medical Engineering, Mechanical Engineering, Civil and Environmental Engineering
+    department: {
+        type: String,
+        required: true,
+        enum: ["CSE", "Medical Engineering", "Mechanical Engineering", "Civil and Environmental Engineering"],
+    },
+
+    //  Database-Level Validation
+    major: {
+        type: String,
+        required: function() {
+            return this.role === "student" || this.role === "advisor";
+        },
+        enum: ["CS", "CE", "IT", "CyS", "BME"],
+    },
+    // updated the authController
 },
     {
         timestamps: true,
