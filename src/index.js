@@ -11,9 +11,6 @@ const dbConnect = require("./config/dbConnect");
 // call this function
 dbConnect();
 
-// import the Course model
-const Course = require("./models/courseModel.js");
-
 // create an app
 const app = express();
 
