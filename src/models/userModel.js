@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 // define all the properties in this object
 const userSchema = new mongoose.Schema({
+    uid: {
+        // Put UI validations for the UID
+        type: String,
+        required: true,
+        unique: true,
+    },
     username: {
         type: String,
         required: true,
@@ -21,7 +27,7 @@ const userSchema = new mongoose.Schema({
     department: {
         type: String,
         required: true,
-        enum: ["CSE", "Medical Engineering", "Mechanical Engineering", "Civil and Environmental Engineering"],
+        enum: ["CSE", "BME", "ME"],
     },
 
     //  Database-Level Validation
@@ -30,7 +36,7 @@ const userSchema = new mongoose.Schema({
         required: function() {
             return this.role === "student" || this.role === "advisor";
         },
-        enum: ["CS", "CE", "IT", "CyS", "BME"],
+        enum: ["CS", "CE", "IT", "CyS", "ME", "BME"],
     },
     // updated the authController
 },

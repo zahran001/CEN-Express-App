@@ -11,7 +11,7 @@ const register = async (req, res) => {
 
         // We will have these filled from the user as a request body
         // When we create the model, these values should be the properties in the user object
-        const { username, password, role, department, major } = req.body;
+        const { uid, username, password, role, department, major } = req.body;
 
         if ((role === "student" || role === "advisor") && !major) {
             return res.status(400).json({ message: "Major is required for students and advisors." });
@@ -21,7 +21,7 @@ const register = async (req, res) => {
         // pass the salt number required to hash the password along with the raw password
         const bcryptHashedPassword = await bcrypt.hash(password, 10);
         // create the newUser
-        const newUser = new User({ username, password: bcryptHashedPassword, role, department, major });
+        const newUser = new User({ uid, username, password: bcryptHashedPassword, role, department, major });
         // save that user
         await newUser.save();
         // give back the response - pass the json data to the user 
