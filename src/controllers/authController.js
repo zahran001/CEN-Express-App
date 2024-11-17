@@ -9,9 +9,13 @@ const User = require("../models/userModel");
 const register = async (req, res) => {
     try {
 
-        // We will have these three filled from the user as a request body
-        // When we create the model, these three values should be the properties in the user object
+        // We will have these filled from the user as a request body
+        // When we create the model, these values should be the properties in the user object
         const { username, password, role, department, major } = req.body;
+
+        if ((role === "student" || role === "advisor") && !major) {
+            return res.status(400).json({ message: "Major is required for students and advisors." });
+        }
 
         // hash the password
         // pass the salt number required to hash the password along with the raw password
@@ -50,24 +54,31 @@ const login = async (req, res) => {
 
         // if the login is successful, generate a token and give the token as a response back to the user
         // use jwt.sign() to generate the token
+
+        // Confirm that the department field is part of the token payload when it is generated during login.
         const token = jwt.sign(
             // _id is automatically generated whenever you create a MongoDB record in the database
-            { id: user._id, role: user.role }, process.env.JWT_SECRET,
+            { id: user._id, role: user.role, department: user.department }, process.env.JWT_SECRET,
             { expiresIn: "1h" },
         );
+
+        /* 
+        Including department in the token ensures all the user's authorization details (like role and department) 
+        are self-contained within the token. 
+        This makes the server completely independent of session storage.
+        */
 
         // return the token in the response
         res.status(200).json({ token })
 
 
     } catch (error) {
-        res.status(500).json({ message: `User registration failed` })
+        res.status(500).json({ message: `User login failed` })
     }
 
 };
-;
 
 module.exports = {
     register,
     login,
-}
+};

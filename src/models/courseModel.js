@@ -11,6 +11,7 @@ const courseSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        unique: true,
     },
     credits: {
         type: Number,
@@ -25,6 +26,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ["Fall","Spring","Summer"],
+    },
+    year: {
+        type: Number,
+        required: true,
     },
     instructor_name: {
         type: String,

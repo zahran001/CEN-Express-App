@@ -26,6 +26,20 @@ const getSingleCourse = async (req, res) => {
 
 // create a course
 const createCourse =  async (req, res) => {
+    // Ensure the staff user can only add courses to their department
+
+    /*
+    The goal is to ensure that the department in the request (req.body.department) matches 
+    the user's department (req.user.department).
+    */
+
+    const { department } = req.body;
+    if (req.user.department !== department) {
+        return res.status(403).json({ 
+            message: "Access denied: Can only create courses for your department" 
+        });
+    }
+
     try {
         // save the course
         // await - because it takes time
@@ -51,6 +65,13 @@ const updateCourse = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
+        // Ensure the staff user can only update courses in their department
+        if (req.user.department !== course.department) {
+            return res.status(403).json({ 
+                message: "Access denied: Can only update courses for your department" 
+            });
+        }
+
         // Check it again
         const updatedCourse = await Course.findById(id);
         res.status(200).json(updatedCourse);
@@ -72,6 +93,13 @@ const deleteCourse = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
+        // Ensure the staff user can only update courses in their department
+        if (req.user.department !== course.department) {
+            return res.status(403).json({ 
+                message: "Access denied: Can only update courses for your department" 
+            });
+        }
+
         res.status(200).json({ message: "Course deleted successfully." });
 
     } catch (error) {
@@ -90,6 +118,6 @@ module.exports = {
     updateCourse,
     deleteCourse,
 
-}
+};
 
 
