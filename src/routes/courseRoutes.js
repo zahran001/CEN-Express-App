@@ -18,7 +18,7 @@ router.get("/:id", getSingleCourse);
 
 // router.put("/:id", updateCourse);
 
-// router.delete("/:id", deleteCourse)
+// router.delete("/:id", deleteCourse);
 
 router.post("/", verifyToken, authorizeRoles("staff"), createCourse);
 

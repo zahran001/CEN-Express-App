@@ -6,6 +6,11 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 
+const cors = require("cors");
+const corsOptions = {
+    origin: ["http://localhost:5173"],
+};
+
 // import dbConnect
 const dbConnect = require("./config/dbConnect");
 // call this function
@@ -13,6 +18,8 @@ dbConnect();
 
 // create an app
 const app = express();
+
+app.use(cors(corsOptions));
 
 // Middleware to get the json data
 app.use(express.json());

@@ -33,9 +33,6 @@ const userSchema = new mongoose.Schema({
     //  Database-Level Validation
     major: {
         type: String,
-        required: function() {
-            return this.role === "student" || this.role === "advisor";
-        },
         enum: ["CS", "CE", "IT", "CyS", "ME", "BME"],
     },
     // updated the authController

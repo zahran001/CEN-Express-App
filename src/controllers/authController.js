@@ -8,30 +8,40 @@ const User = require("../models/userModel");
 // an arrow function
 const register = async (req, res) => {
     try {
-
-        // We will have these filled from the user as a request body
-        // When we create the model, these values should be the properties in the user object
         const { uid, username, password, role, department, major } = req.body;
 
+        // Validate role
+        const allowedRoles = ["student", "advisor", "staff", "instructor"];
+        if (!allowedRoles.includes(role)) {
+            return res.status(400).json({ message: "Invalid role specified." });
+        }
+
+        // Validate major for specific roles
         if ((role === "student" || role === "advisor") && !major) {
             return res.status(400).json({ message: "Major is required for students and advisors." });
         }
 
-        // hash the password
-        // pass the salt number required to hash the password along with the raw password
+        // Hash the password
         const bcryptHashedPassword = await bcrypt.hash(password, 10);
-        // create the newUser
-        const newUser = new User({ uid, username, password: bcryptHashedPassword, role, department, major });
-        // save that user
+
+        // Create the user object dynamically
+        const userObject = { uid, username, password: bcryptHashedPassword, role, department };
+        if (major && (role === "student" || role === "advisor")) {
+            userObject.major = major;
+        }
+
+        // Create and save the new user
+        const newUser = new User(userObject);
         await newUser.save();
-        // give back the response - pass the json data to the user 
+
+        // Respond with success
         res.status(201).json({ message: `User registered with username ${username}` });
     } catch (error) {
-        // debugging
-        res.status(500).json({ message: `User registration failed - authController` });
-
+        console.error("Registration error:", error.message); // For debugging
+        res.status(500).json({ message: `User registration failed: ${error.message}` });
     }
 };
+
 
 const login = async (req, res) => {
     try {
@@ -69,7 +79,9 @@ const login = async (req, res) => {
         */
 
         // return the token in the response
-        res.status(200).json({ token })
+        // res.status(200).json({ token })
+        res.status(200).json({ token, role: user.role, username: user.username });
+
 
 
     } catch (error) {
