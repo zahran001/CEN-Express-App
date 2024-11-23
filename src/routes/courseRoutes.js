@@ -10,9 +10,9 @@ const authorizeRoles = require("../middlewares/roleMiddleware.js");
 // destructure
 const {getCourses, getSingleCourse, createCourse, updateCourse, deleteCourse } = require("../controllers/courseController"); 
 
-router.get("/", getCourses);
+router.get("/view", verifyToken, getCourses);
 
-router.get("/:id", getSingleCourse);
+router.get("/view-single/:id", verifyToken, getSingleCourse);
 
 // router.post("/", createCourse);
 
@@ -20,11 +20,11 @@ router.get("/:id", getSingleCourse);
 
 // router.delete("/:id", deleteCourse);
 
-router.post("/", verifyToken, authorizeRoles("staff"), createCourse);
+router.post("/create", verifyToken, authorizeRoles("staff"), createCourse);
 
-router.put("/:id", verifyToken, authorizeRoles("staff"), updateCourse);
+router.put("/update/:id", verifyToken, authorizeRoles("staff"), updateCourse);
 
-router.delete("/:id", verifyToken, authorizeRoles("staff"), deleteCourse);
+router.delete("/delete/:id", verifyToken, authorizeRoles("staff"), deleteCourse);
 
 
 module.exports = router;
