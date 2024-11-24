@@ -68,7 +68,7 @@ const login = async (req, res) => {
         // Confirm that the department field is part of the token payload when it is generated during login.
         const token = jwt.sign(
             // _id is automatically generated whenever you create a MongoDB record in the database
-            { id: user._id, role: user.role, department: user.department }, process.env.JWT_SECRET,
+            { id: user._id, uid: user.uid, role: user.role, department: user.department, username: user.username }, process.env.JWT_SECRET,
             { expiresIn: "1h" },
         );
 
@@ -80,7 +80,7 @@ const login = async (req, res) => {
 
         // return the token in the response
         // res.status(200).json({ token })
-        res.status(200).json({ token, role: user.role, username: user.username });
+        res.status(200).json({ token, role: user.role, username: user.username, department: user.department });
 
 
 

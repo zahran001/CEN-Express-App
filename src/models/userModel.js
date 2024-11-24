@@ -36,6 +36,30 @@ const userSchema = new mongoose.Schema({
         enum: ["CS", "CE", "IT", "CyS", "ME", "BME"],
     },
     // updated the authController
+    gradDate:{
+        type: Date,
+        required: false,
+    },
+    courses:[
+        {
+            type: String,
+        },
+    ],
+    gpa: {
+        type: Number,
+        min: 0,
+        max: 4,
+    },
+    // Added this extra attribute to help save the course details for instructors
+    instructor_courses: [
+        {
+          course_code: { type: String, required: true },
+          title: { type: String, required: true },
+          credits: { type: Number, required: true },
+          semester: { type: String, required: true },
+          year: { type: Number, required: true },
+        },
+    ],
 },
     {
         timestamps: true,

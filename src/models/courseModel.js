@@ -35,6 +35,13 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    // Add an array for students
+    students: [
+        {
+            type: mongoose.Schema.Types.ObjectId, // Reference to the User model (student)
+            ref: "User", // Replace with your actual User model name
+        },
+    ],
 
 },
     {
@@ -43,3 +50,4 @@ const courseSchema = new mongoose.Schema({
 );
 
 module.exports = mongoose.model("Course", courseSchema);
+// Zahran

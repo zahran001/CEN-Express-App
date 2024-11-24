@@ -5,6 +5,12 @@ const dotenv = require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+const User = require("./models/userModel");
+const authorizeRoles = require("./middlewares/roleMiddleware.js");
+const Log = require("./models/logModel");
+const logMiddleware = require("./middlewares/logMiddleware.js");
+
+
 
 const cors = require("cors");
 const corsOptions = {
@@ -13,6 +19,7 @@ const corsOptions = {
 
 // import dbConnect
 const dbConnect = require("./config/dbConnect");
+const verifyToken = require("./middlewares/authMiddleware.js");
 // call this function
 dbConnect();
 
@@ -20,6 +27,7 @@ dbConnect();
 const app = express();
 
 app.use(cors(corsOptions));
+app.use(logMiddleware);
 
 // Middleware to get the json data
 app.use(express.json());
@@ -40,6 +48,16 @@ app.use("/api/courses", courseRoutes);
 // CRUD operations on course, department by the staff user
 
 
+// Zahran
+
+app.get('/logs', verifyToken, authorizeRoles('staff'), async (req, res) => {
+    try {
+        const logs = await Log.find().sort({ timestamp: -1 }); // Most recent logs first
+        res.status(200).json(logs);
+    } catch (err) {
+        res.status(500).json({ message: 'Error fetching logs.' });
+    }
+});
 // Start the server
 const PORT = process.env.PORT || 7001;
 

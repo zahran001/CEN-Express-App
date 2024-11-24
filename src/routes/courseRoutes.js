@@ -5,14 +5,15 @@ const router = express.Router();
 // Middleware for authentication and authorization
 const verifyToken = require("../middlewares/authMiddleware.js");
 const authorizeRoles = require("../middlewares/roleMiddleware.js");
+const logMiddleware = require("../middlewares/logMiddleware.js");
 
 
 // destructure
 const {getCourses, getSingleCourse, createCourse, updateCourse, deleteCourse } = require("../controllers/courseController"); 
 
-router.get("/view", verifyToken, getCourses);
+router.get("/view", verifyToken, logMiddleware, getCourses);
 
-router.get("/view-single/:id", verifyToken, getSingleCourse);
+router.get("/view-single/:id", verifyToken, logMiddleware, getSingleCourse);
 
 // router.post("/", createCourse);
 
@@ -20,11 +21,11 @@ router.get("/view-single/:id", verifyToken, getSingleCourse);
 
 // router.delete("/:id", deleteCourse);
 
-router.post("/create", verifyToken, authorizeRoles("staff"), createCourse);
+router.post("/create", verifyToken, logMiddleware, authorizeRoles("staff"), createCourse);
 
-router.put("/update/:id", verifyToken, authorizeRoles("staff"), updateCourse);
+router.put("/update/:id", verifyToken, logMiddleware, authorizeRoles("staff"), updateCourse);
 
-router.delete("/delete/:id", verifyToken, authorizeRoles("staff"), deleteCourse);
+router.delete("/delete/:id", verifyToken, logMiddleware, authorizeRoles("staff"), deleteCourse);
 
 
 module.exports = router;
