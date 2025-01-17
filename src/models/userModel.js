@@ -42,13 +42,18 @@ const userSchema = new mongoose.Schema({
     },
     courses:[
         {
-            type: String,
+            // Added grades
+            courseCode: { type: String, required: true },
+            grade: { type: String, enum: ["A", "B", "C", "D", "F", "I", "S", "U"] },
         },
     ],
+    // Added this extra attribute to help save the course details for students
     gpa: {
         type: Number,
         min: 0,
         max: 4,
+
+
     },
     // Added this extra attribute to help save the course details for instructors
     instructor_courses: [

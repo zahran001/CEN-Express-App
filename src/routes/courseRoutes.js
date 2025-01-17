@@ -15,12 +15,6 @@ router.get("/view", verifyToken, logMiddleware, getCourses);
 
 router.get("/view-single/:id", verifyToken, logMiddleware, getSingleCourse);
 
-// router.post("/", createCourse);
-
-// router.put("/:id", updateCourse);
-
-// router.delete("/:id", deleteCourse);
-
 router.post("/create", verifyToken, logMiddleware, authorizeRoles("staff"), createCourse);
 
 router.put("/update/:id", verifyToken, logMiddleware, authorizeRoles("staff"), updateCourse);

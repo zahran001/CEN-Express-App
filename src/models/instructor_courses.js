@@ -32,5 +32,3 @@ const instructor_courses = new mongoose.Schema({
 );
 
 module.exports = mongoose.model("Course", courseSchema);
-
-// Zahran - Backup

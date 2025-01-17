@@ -1,10 +1,21 @@
-const Course = require("../models/courseModel");
+const User = require("../models/userModel");
 
 // get all courses
 const getCourses = async (req, res) => {
     try {
         const department = req.user.department;
-        const courses = await Course.find({ department }); // find as per the department
+
+        // Aggregate both student and instructor courses
+        const users = await User.find({ department: department, role: "instructor" }).lean();
+
+        // Extract courses from students and instructors
+        const courses = users.reduce((acc, user) => {
+       
+        if (user.role === "instructor" && user.instructor_courses) {
+            acc.push(...user.instructor_courses.map(course => ({ ...course, instructor_name: user.username, role: "instructor", department: department })));
+        }
+        return acc;
+        }, []);
         res.status(200).json(courses);
 
     } catch (error) {
@@ -17,7 +28,7 @@ const getSingleCourse = async (req, res) => {
     try {
         // using params
         const { id } = req.params; // get the id from the URL
-        const course = await Course.findById(id);
+        const course = await User.findById(id);
         res.status(200).json(course);
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -82,35 +93,41 @@ const updateCourse = async (req, res) => {
     }
 };
 
-// delete a product
 const deleteCourse = async (req, res) => {
     try {
-        // destructure it
-        const { id } = req.params;
-
-        const course = await Course.findByIdAndDelete(id);
-
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
-
-        // Ensure the staff user can only update courses in their department
-        if (req.user.department !== course.department) {
-            return res.status(403).json({ 
-                message: "Access denied: Can only update courses for your department" 
-            });
-        }
-
-        res.status(200).json({ message: "Course deleted successfully." });
-
+      // Destructure course code from the request params
+      const { courseCode } = req.params;
+  
+      // Find the course in the user's department
+      const course = await User.findOne({
+        "instructor_courses.course_code": courseCode,
+        department: req.user.department,
+        role: "instructor"
+      });
+      console.log(course);
+  
+      if (!course) {
+        return res.status(404).json({ message: "Course not found or you don't have permission to delete it" });
+      }
+  
+      // Remove the course from the instructor's courses
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: course._id },
+        { $pull: { instructor_courses: { course_code: courseCode } } },
+        { new: true }
+      );
+  
+      if (!updatedUser) {
+        // return res.status(500).json({ message: "Failed to delete course" });
+        return res.status(500).json({ message: "Failed to delete course" });
+      }
+  
+      res.status(200).json({ message: "Course deleted successfully." });
+  
     } catch (error) {
-        res.status(500).json({ message: error.mesage });
-
+      res.status(500).json({ message: error.message });
     }
-};
-
-
-
+  };
 
 module.exports = {
     getCourses,

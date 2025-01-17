@@ -56,5 +56,3 @@ const dropStudentFromCourse = async (req, res) => {
 };
 
 module.exports = { addStudentToCourse, dropStudentFromCourse };
-
-// Zahran - Advisor - Backup
